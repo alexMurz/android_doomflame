@@ -1,0 +1,27 @@
+[package]
+name = "flamenative"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "^ 0.8"
+wgpu = { version = "^ 0.13", features = ["spirv"] }
+
+futures = "^ 0.3"
+bytemuck = "^ 1.12"
+
+[target.'cfg(target_os="android")'.dependencies]
+jni = "^ 0.19"
+ndk = { version = "^ 0.7", features = ["bitmap"] }
+
+[profile.release]
+opt-level = 3
+panic = "unwind"
+debug = false
+
+[lib]
+path = "./src/jni_main.rs"
+name = "flamenative"
+crate-type = ["cdylib"]

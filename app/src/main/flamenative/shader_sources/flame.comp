@@ -1,0 +1,63 @@
+#version 320 es
+precision mediump float;
+
+layout(local_size_x = 16, local_size_y = 16) in;
+
+layout(std430, set = 0, binding = 0) readonly buffer Src {
+    uint temp[];
+} src;
+
+layout(std430, set = 0, binding = 1) writeonly buffer Dst {
+    uint temp[];
+} dst;
+
+layout(std430, set = 0, binding = 2) writeonly buffer Color {
+    uint color[];
+} color;
+
+layout(std430, set = 1, binding = 0) readonly buffer Metadata {
+    uint size;
+    uint palette[];
+} metadata;
+
+layout(std430, set = 1, binding = 1) buffer RandSeed {
+    highp float seed[];
+} rand_seed;
+
+// Типо рандом)
+int noise(int x, int y, int len) {
+    float PHI = 1.61803398874989484820459;
+    int idx = x + y * int(metadata.size);
+    float v = fract(rand_seed.seed[idx] * PHI);
+    rand_seed.seed[idx] = v;
+    return int(v * float(len));
+}
+
+void main() {
+    int x = int(gl_GlobalInvocationID.x);
+    int y = int(gl_GlobalInvocationID.y);
+    int w = int(metadata.size);
+
+    if (x >= w || y >= w) return;
+    uint curr_index = uint(x + y * w);
+
+    if (y < w - 1) {
+        int dx = noise(x, y, 3) - 1;
+        int dy = noise(x, y, 6);
+        int dt = noise(x, y, 2);
+
+        int x1 = clamp(x + dx, 0, w - 1);
+        int y1 = clamp(y + dy, 0, w - 1);
+
+        uint srcIndex = uint(x1 + y1 * w);
+
+        int t = int(src.temp[srcIndex]);
+        int t1 = max(t - dt, 0);
+
+        dst.temp[curr_index] = uint(t1);
+        color.color[curr_index] = metadata.palette[t1];
+    } else {
+        uint t = src.temp[curr_index];
+        color.color[curr_index] = metadata.palette[t];
+    }
+}
