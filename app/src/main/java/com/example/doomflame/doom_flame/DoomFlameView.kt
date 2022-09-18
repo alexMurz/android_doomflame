@@ -14,15 +14,18 @@ private class UpdaterThread(
     private val swapchain: Swapchain<Bitmap>,
     private val compute: DoomFlameCompute,
     private val upsMean: WindowMean? = null,
-) : Thread() {
+) : Thread("UpdaterThread"), Swapchain.Updater<Bitmap> {
+
+    override fun update(value: Bitmap) {
+        val millis = measureTimeMillis {
+            compute.draw(value)
+        }
+        upsMean?.put(millis / 1e3f)
+    }
+
     override fun run() {
         while (!isInterrupted) {
-            swapchain.refresh {
-                val millis = measureTimeMillis {
-                    compute.draw(it)
-                }
-                upsMean?.put(millis / 1e3f)
-            }
+            swapchain.update(this)
         }
     }
 }
@@ -48,7 +51,6 @@ class DoomFlameView private constructor(
         color = Color.BLACK
         textSize = 36f
     }
-
 
     private var updaterThread: Thread? = null
 
@@ -100,7 +102,7 @@ class DoomFlameView private constructor(
             bottom = dTop + dHeight
         }
 
-        swapchain.use {
+        swapchain.consume {
             canvas.drawBitmap(it, srcRect, dstRect, paint)
         }
 

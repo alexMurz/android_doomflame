@@ -21,14 +21,19 @@ class DoubleBufferingSwapchain<T>(
         else -> first
     }
 
-    override fun refresh(action: (T) -> Unit): Unit = synchronized(refreshLock) {
+
+    override fun consume(action: Swapchain.Consumer<T>): Unit = synchronized(useLock) {
+        action.consume(get())
+    }
+
+    override fun update(action: Swapchain.Updater<T>): Unit = synchronized(refreshLock) {
         val stateValue = state.get()
         val item = get(
             stateValue = stateValue,
             reverse = true,
         )
 
-        action(item)
+        action.update(item)
         synchronized(useLock) {
             if (!state.compareAndSet(stateValue, !stateValue)) {
                 throw IllegalStateException(
@@ -38,11 +43,8 @@ class DoubleBufferingSwapchain<T>(
         }
     }
 
-    override fun use(action: (T) -> Unit) = synchronized(useLock) {
-        action(get())
-    }
-
     fun interface ItemFactory<T> {
         fun create(): T
     }
+
 }

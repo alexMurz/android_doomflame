@@ -1,6 +1,14 @@
 package com.example.doomflame.swapchain
 
 interface Swapchain<T> {
-    fun use(action: (T) -> Unit)
-    fun refresh(action: (T) -> Unit)
+    fun consume(action: Consumer<T>)
+    fun update(action: Updater<T>)
+
+    fun interface Consumer<T> {
+        fun consume(value: T)
+    }
+
+    fun interface Updater<T> {
+        fun update(value: T)
+    }
 }
