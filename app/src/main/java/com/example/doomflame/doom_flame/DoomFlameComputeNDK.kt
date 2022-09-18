@@ -20,7 +20,7 @@ class DoomFlameComputeNDK(resolution: Int) : DoomFlameCompute {
         DoomFlameNDKBindings.destroy(ptr)
     }
 
-    override fun toString(): String = "RustCompute(CPU)"
+    override fun toString(): String = "RustCompute(WGPU)"
 }
 
 object DoomFlameNDKBindings {

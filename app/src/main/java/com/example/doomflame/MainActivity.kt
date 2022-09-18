@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
 
         doomView = DoomFlameView.Builder()
             .withResolution(512)
-//            .withCompute { DoomFlameComputeNDK(it) }
+            .withCompute { DoomFlameComputeNDK(it) }
             .build(this)
         setContentView(doomView)
     }

@@ -11,16 +11,16 @@ layout(std430, set = 0, binding = 1) writeonly buffer Dst {
     uint temp[];
 } dst;
 
-layout(std430, set = 0, binding = 2) writeonly buffer Color {
+layout(std430, set = 1, binding = 0) writeonly buffer Color {
     uint color[];
 } color;
 
-layout(std430, set = 1, binding = 0) readonly buffer Metadata {
+layout(std430, set = 1, binding = 1) readonly buffer Metadata {
     uint size;
     uint palette[];
 } metadata;
 
-layout(std430, set = 1, binding = 1) buffer RandSeed {
+layout(std430, set = 1, binding = 2) buffer RandSeed {
     highp float seed[];
 } rand_seed;
 

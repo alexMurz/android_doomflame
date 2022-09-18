@@ -3,6 +3,8 @@ use std::mem::size_of;
 use rand::Rng;
 use wgpu::{util::DeviceExt, BufferUsages};
 
+const LOCAL_GROUP_SIZE: u32 = 16;
+
 pub struct DoomFlame {
     // gpu data
     dev: wgpu::Device,
@@ -19,7 +21,7 @@ pub struct DoomFlame {
 }
 
 impl crate::DoomFlameRunner for DoomFlame {
-    fn create(resolution: usize, mut palette: Vec<u32>) -> Self {
+    fn create(resolution: usize, palette: Vec<u32>) -> Self {
         let temp_buffer_size = resolution * resolution * size_of::<u32>();
 
         let (dev, queue) = futures::executor::block_on(create_wgpu());
@@ -28,12 +30,13 @@ impl crate::DoomFlameRunner for DoomFlame {
         // Meta-data resources
         ////////////////////////////////////////////////////////////////////////////////////
         let meta_buffer = {
-            palette.insert(0, resolution as u32);
+            let mut data = palette.clone();
+            data.insert(0, resolution as u32);
 
             let desc = wgpu::util::BufferInitDescriptor {
-                label: None,
+                label: Some("metadata-buffer"),
                 usage: BufferUsages::STORAGE,
-                contents: bytemuck::cast_slice(&palette),
+                contents: bytemuck::cast_slice(&data),
             };
             dev.create_buffer_init(&desc)
         };
@@ -46,7 +49,7 @@ impl crate::DoomFlameRunner for DoomFlame {
                 noise.push(r.gen());
             }
             let desc = wgpu::util::BufferInitDescriptor {
-                label: None,
+                label: Some("noise-buffer"),
                 usage: BufferUsages::STORAGE,
                 contents: bytemuck::cast_slice(&noise),
             };
@@ -73,16 +76,21 @@ impl crate::DoomFlameRunner for DoomFlame {
             contents: bytemuck::cast_slice(&initial_temp_buffer),
         };
 
-        let buffer1 = dev.create_buffer_init(&temp_buffer_desc);
-        let buffer2 = dev.create_buffer_init(&temp_buffer_desc);
+        let buffer1 = dev.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("temperature-buffer-1"),
+            ..temp_buffer_desc
+        });
+        let buffer2 = dev.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("temperature-buffer-2"),
+            ..temp_buffer_desc
+        });
 
-        let color_buffer_desc = wgpu::BufferDescriptor {
-            label: None,
+        let color_buffer = dev.create_buffer(&wgpu::BufferDescriptor {
+            label: Some("color-buffer"),
             size: temp_buffer_size as u64,
             usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::MAP_READ,
             mapped_at_creation: false,
-        };
-        let color_buffer = dev.create_buffer(&color_buffer_desc);
+        });
 
         let tracking_pixmap = vec![palette[0]; resolution * resolution];
 
@@ -95,7 +103,7 @@ impl crate::DoomFlameRunner for DoomFlame {
         let cs_module = dev.create_shader_module(spirv_source);
 
         let pipeline = dev.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
-            label: None,
+            label: Some("doomflame-pipeline"),
             layout: None,
             module: &cs_module,
             entry_point: "main",
@@ -109,7 +117,7 @@ impl crate::DoomFlameRunner for DoomFlame {
         ////////////////////////////////////////////////////////////////////////////////////
 
         let bind_group1 = dev.create_bind_group(&wgpu::BindGroupDescriptor {
-            label: None,
+            label: Some("temperature-binding-1"),
             layout: &buffer_bind_group_layout,
             entries: &[
                 wgpu::BindGroupEntry {
@@ -119,16 +127,12 @@ impl crate::DoomFlameRunner for DoomFlame {
                 wgpu::BindGroupEntry {
                     binding: 1,
                     resource: buffer2.as_entire_binding(),
-                },
-                wgpu::BindGroupEntry {
-                    binding: 2,
-                    resource: color_buffer.as_entire_binding(),
                 },
             ],
         });
 
         let bind_group2 = dev.create_bind_group(&wgpu::BindGroupDescriptor {
-            label: None,
+            label: Some("temperature-binding-2"),
             layout: &buffer_bind_group_layout,
             entries: &[
                 wgpu::BindGroupEntry {
@@ -139,23 +143,23 @@ impl crate::DoomFlameRunner for DoomFlame {
                     binding: 1,
                     resource: buffer1.as_entire_binding(),
                 },
-                wgpu::BindGroupEntry {
-                    binding: 2,
-                    resource: color_buffer.as_entire_binding(),
-                },
             ],
         });
 
         let meta_bind_group = dev.create_bind_group(&wgpu::BindGroupDescriptor {
-            label: None,
+            label: Some("fixed-data-bindgroup"),
             layout: &meta_bind_group_layout,
             entries: &[
                 wgpu::BindGroupEntry {
                     binding: 0,
-                    resource: meta_buffer.as_entire_binding(),
+                    resource: color_buffer.as_entire_binding(),
                 },
                 wgpu::BindGroupEntry {
                     binding: 1,
+                    resource: meta_buffer.as_entire_binding(),
+                },
+                wgpu::BindGroupEntry {
+                    binding: 2,
                     resource: noise_buffer.as_entire_binding(),
                 },
             ],
@@ -202,7 +206,7 @@ impl crate::DoomFlameRunner for DoomFlame {
             pass.set_bind_group(0, bind_group, &[]);
             pass.set_bind_group(1, meta_bind_group, &[]);
 
-            let group_size = resolution / 16;
+            let group_size = resolution / LOCAL_GROUP_SIZE;
             pass.dispatch_workgroups(group_size, group_size, 1);
         }
 
@@ -215,7 +219,9 @@ impl crate::DoomFlameRunner for DoomFlame {
             let buffer_slice = color_buffer.slice(..);
 
             let (send, recv) = futures::channel::oneshot::channel();
-            buffer_slice.map_async(wgpu::MapMode::Read, |x| send.send(x).unwrap());
+            buffer_slice.map_async(wgpu::MapMode::Read, |x| {
+                send.send(x).ok();
+            });
 
             // Wait for idle
             dev.poll(wgpu::MaintainBase::Wait);

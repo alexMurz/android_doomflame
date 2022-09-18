@@ -17,9 +17,11 @@ jni = "^ 0.19"
 ndk = { version = "^ 0.7", features = ["bitmap"] }
 
 [profile.release]
-opt-level = 3
-panic = "unwind"
-debug = false
+opt-level = "z"
+panic = "abort"
+strip = true
+lto = true
+codegen-units = 1
 
 [lib]
 path = "./src/jni_main.rs"

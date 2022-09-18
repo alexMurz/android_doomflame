@@ -17,12 +17,12 @@ private class UpdaterThread(
 ) : Thread() {
     override fun run() {
         while (!isInterrupted) {
-            val millis = measureTimeMillis {
-                swapchain.refresh {
+            swapchain.refresh {
+                val millis = measureTimeMillis {
                     compute.draw(it)
                 }
+                upsMean?.put(millis / 1e3f)
             }
-            upsMean?.put(millis / 1e3f)
         }
     }
 }
