@@ -3,6 +3,7 @@ package com.example.doomflame
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.graphics.createBitmap
+import com.example.doomflame.doom_flame.DoomFlameComputeCPU
 import com.example.doomflame.doom_flame.DoomFlameComputeNDK
 import com.example.doomflame.doom_flame.DoomFlameView
 import com.example.doomflame.swapchain.SwapchainImpl
@@ -14,10 +15,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val resolution = 512
+        val resolution = 64
         doomView = DoomFlameView.Builder()
             .withResolution(resolution)
-            .withSwapchain(SwapchainImpl(3) { createBitmap(resolution, resolution) })
             .withCompute { DoomFlameComputeNDK(it) }
             .build(this)
         setContentView(doomView)

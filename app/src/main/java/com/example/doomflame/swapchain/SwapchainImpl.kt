@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * is cases of multiple, slow consumers
  * but whatever, not our use case
  */
-class SwapchainImpl<T: Any>(
+class SwapchainImpl<T : Any>(
     chainLength: Int = 3,
     factory: ItemFactory<T>,
 ) : Swapchain<T> {
@@ -23,47 +23,58 @@ class SwapchainImpl<T: Any>(
         }
     }
 
-    private val producerCache = ArrayDeque<ChainNode<T>>(chainLength)
+    internal val producerCache = ArrayDeque<ChainNode<T>>(chainLength)
 
     /**
      * Ordered chain
      * From newest to oldest
      */
-    private val chain = ConcurrentLinkedDeque<ChainNode<T>>().apply {
+    internal val chain = ConcurrentLinkedDeque<ChainNode<T>>().apply {
         repeat(chainLength) {
             add(ChainNode(factory.create()))
         }
     }
 
-    override fun consume(action: Swapchain.Consumer<T>) {
-        val node: ChainNode<T> = chain.first
+    internal val nodeMap = chain.associateBy { it.item }
+
+    internal fun nodeForValue(value: T) =
+        nodeMap[value] ?: throw IllegalArgumentException("Value is not a member of this Swapchain")
+
+    override fun acquire(): T {
+        val node = chain.first
         node.readers.incrementAndGet()
-        action.consume(node.item)
+        return node.item
+    }
+
+    override fun release(value: T) {
+        val node = nodeForValue(value)
         node.readers.decrementAndGet()
     }
 
-    override fun update(action: Swapchain.Updater<T>): Unit = synchronized(this) {
+    override fun acquireDirty(): T {
         var node = chain.removeLast()
         while (node.readers.get() > 0) {
             producerCache.addLast(node)
             node = chain.removeLast()
         }
 
-        while (producerCache.size > 0) {
+        while (producerCache.isNotEmpty()) {
             chain.addLast(producerCache.removeFirst())
         }
 
-        action.update(node.item)
-        chain.addFirst(node)
-
-        println(chain.joinToString())
+        return node.item
     }
 
-    private class ChainNode<out T>(
+    override fun releaseUpdated(value: T) {
+        val node = nodeForValue(value)
+        chain.addFirst(node)
+    }
+
+    internal class ChainNode<out T>(
         val item: T,
         val readers: AtomicInteger = AtomicInteger(0),
     ) {
-        override fun toString() = "Node(${readers.get()})"
+        override fun toString() = "Node(readers:${readers.get()}, value:$item)"
     }
 
     fun interface ItemFactory<T> {

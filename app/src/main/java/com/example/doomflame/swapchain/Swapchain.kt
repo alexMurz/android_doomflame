@@ -1,14 +1,19 @@
 package com.example.doomflame.swapchain
 
 interface Swapchain<T> {
-    fun consume(action: Consumer<T>)
-    fun update(action: Updater<T>)
+    fun acquire(): T
+    fun release(value: T)
 
-    fun interface Consumer<T> {
-        fun consume(value: T)
-    }
+    fun acquireDirty(): T
+    fun releaseUpdated(value: T)
+}
 
-    fun interface Updater<T> {
-        fun update(value: T)
-    }
+inline fun <T, R> Swapchain<T>.use(action: (T) -> R): R {
+    val v = acquire()
+    return action(v).also { release(v) }
+}
+
+inline fun <T, R> Swapchain<T>.update(action: (T) -> R): R {
+    val v = acquireDirty()
+    return action(v).also { releaseUpdated(v) }
 }

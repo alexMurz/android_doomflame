@@ -6,26 +6,24 @@ import android.graphics.*
 import android.view.View
 import androidx.core.graphics.createBitmap
 import com.example.doomflame.math.WindowMean
-import com.example.doomflame.swapchain.DoubleBufferingSwapchain
 import com.example.doomflame.swapchain.Swapchain
+import com.example.doomflame.swapchain.SwapchainImpl
+import com.example.doomflame.swapchain.update
 import kotlin.system.measureTimeMillis
 
 private class UpdaterThread(
     private val swapchain: Swapchain<Bitmap>,
     private val compute: DoomFlameCompute,
     private val upsMean: WindowMean? = null,
-) : Thread("UpdaterThread"), Swapchain.Updater<Bitmap> {
-
-    override fun update(value: Bitmap) {
-        val millis = measureTimeMillis {
-            compute.draw(value)
-        }
-        upsMean?.put(millis / 1e3f)
-    }
-
+) : Thread("UpdaterThread") {
     override fun run() {
         while (!isInterrupted) {
-            swapchain.update(this)
+            swapchain.update { bitmap ->
+                val millis = measureTimeMillis {
+                    compute.draw(bitmap)
+                }
+                upsMean?.put(millis / 1e3f)
+            }
         }
     }
 }
@@ -41,6 +39,7 @@ class DoomFlameView private constructor(
     private val upsMean = WindowMean(100)
     private val srcRect = Rect(0, 0, resolution, resolution)
     private val dstRect = Rect(0, 0, 0, 0)
+    private var acquiredBitmap: Bitmap? = null
 
     private val paint = Paint().apply {
         isAntiAlias = true
@@ -70,6 +69,8 @@ class DoomFlameView private constructor(
     fun destroy() {
         pause()
         compute.dispose()
+        acquiredBitmap?.let(swapchain::release)
+        acquiredBitmap = null
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -102,8 +103,9 @@ class DoomFlameView private constructor(
             bottom = dTop + dHeight
         }
 
-        swapchain.consume {
-            canvas.drawBitmap(it, srcRect, dstRect, paint)
+        acquiredBitmap?.let(swapchain::release)
+        acquiredBitmap = swapchain.acquire().also { bitmap ->
+            canvas.drawBitmap(bitmap, srcRect, dstRect, paint)
         }
 
         if (updaterThread?.isInterrupted == false) {
@@ -135,7 +137,7 @@ class DoomFlameView private constructor(
                 ?: DoomFlameComputeCPU(resolution)
 
             val swapchain = swapchain
-                ?: DoubleBufferingSwapchain {
+                ?: SwapchainImpl(3) {
                     createBitmap(resolution, resolution, Bitmap.Config.ARGB_8888)
                 }
 
