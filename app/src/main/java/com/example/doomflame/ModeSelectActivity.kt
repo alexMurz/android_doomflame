@@ -1,5 +1,6 @@
 package com.example.doomflame
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.doomflame.databinding.ActivityModeSelectBinding
@@ -24,6 +25,16 @@ class ModeSelectActivity : AppCompatActivity() {
 
         binding.themeChange.setOnClickListener {
             startActivity(ThemeChangeIntent(this))
+        }
+
+        binding.flame.setOnClickListener {
+            startActivity(Intent(this, DoomFlameActivity::class.java).apply {
+                putExtra("gpu", true)
+            })
+        }
+
+        binding.flameCpu.setOnClickListener {
+            startActivity(Intent(this, DoomFlameActivity::class.java))
         }
     }
 }

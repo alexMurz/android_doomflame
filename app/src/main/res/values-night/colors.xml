@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="primary">#FF2062EE</color>
+    <color name="primary_variant">#FF2037B3</color>
+    <color name="on_primary">#FF000000</color>
+    <color name="primary_ripple">#334067F3</color>
+
+    <color name="accent">#FFAA03C5</color>
+    <color name="accent_variant">#FF470186</color>
+    <color name="on_accent">#FFFFFFFF</color>
+    <color name="accent_ripple">#33870186</color>
+
     <color name="background_page">#FF202033</color>
     <color name="contrast">#FFFFFFFF</color>
 </resources>
