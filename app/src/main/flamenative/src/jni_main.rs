@@ -1,5 +1,5 @@
-// mod doom_flame;
-mod doom_flame_wgpu;
+#[path ="doom_flame_wgpu2.rs"]
+mod runner;
 
 // ABGR
 pub static FIRE_PALETTE: &[u32] = &[
@@ -31,7 +31,7 @@ mod jni_main {
     };
     use ndk::bitmap::AndroidBitmap;
 
-    type Inst = doom_flame_wgpu::DoomFlame;
+    type Inst = runner::DoomFlame;
 
     fn to_ptr(value: Inst) -> jlong {
         let ptr = Box::into_raw(Box::new(value));

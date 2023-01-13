@@ -2,20 +2,17 @@ package com.example.doomflame
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.graphics.createBitmap
-import com.example.doomflame.doom_flame.DoomFlameComputeCPU
 import com.example.doomflame.doom_flame.DoomFlameComputeNDK
 import com.example.doomflame.doom_flame.DoomFlameView
-import com.example.doomflame.swapchain.SwapchainImpl
 
-class MainActivity : AppCompatActivity() {
+class DoomFlameActivity : AppCompatActivity() {
 
     private lateinit var doomView: DoomFlameView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val resolution = 64
+        val resolution = 512
         doomView = DoomFlameView.Builder()
             .withResolution(resolution)
             .withCompute { DoomFlameComputeNDK(it) }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.doomflame.theme_change.ThemeChangerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_page"
+    tools:context=".theme_change.ThemeChangeActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/Theme.Doomflame.AppBarOverlay"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/Theme.Doomflame.PopupOverlay" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/app_bar_layout">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/theme_change_button"
+                style="@style/Theme.Button.Normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Change theme" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:layout_margin="20dp"
+                android:src="@mipmap/ic_launcher" />
+
+            <View
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:layout_margin="20dp"
+                android:background="@drawable/shape_contrast_circle" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.example.doomflame.theme_change.ThemeChangerView>

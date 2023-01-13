@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.doomflame">
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature android:glEsVersion="0x00030002" />
 
     <application
         android:allowBackup="true"
@@ -13,15 +14,49 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Doomflame"
         tools:targetApi="31">
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
+        <activity
+            android:name=".ModeSelectActivity"
+            android:exported="true"
+            android:label="@string/title_activity_mode_select"
+            android:theme="@style/Theme.Doomflame.NoActionBar">
+            <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".theme_change.ThemeChangeActivity"
+            android:exported="false"
+            android:label="Theme change"
+            android:theme="@style/Theme.Doomflame.NoActionBar" />
+
+        <activity
+            android:name=".icon_select.IconSelectActivity"
+            android:exported="false"
+            android:label="Icon Select"
+            android:theme="@style/Theme.Doomflame.NoActionBar" />
+
+        <activity
+            android:name=".DoomFlameActivity"
+            android:exported="false" />
+
+        <service
+            android:name=".icon_select.ChangeAppIconService"
+            android:stopWithTask="false" />
+
+        <activity-alias
+            android:name=".one"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:targetActivity=".ModeSelectActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
     </application>
 
 </manifest>
