@@ -17,8 +17,6 @@ class ModeSelectActivity : AppCompatActivity() {
         binding = ActivityModeSelectBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-
         binding.iconSelect.setOnClickListener {
             startActivity(iconSelectIntent())
         }

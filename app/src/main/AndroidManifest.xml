@@ -19,7 +19,7 @@
             android:name=".ModeSelectActivity"
             android:exported="true"
             android:label="@string/title_activity_mode_select"
-            android:theme="@style/Theme.Doomflame.NoActionBar">
+            android:theme="@style/Theme.Doomflame">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -35,7 +35,7 @@
             android:name=".icon_select.IconSelectActivity"
             android:exported="false"
             android:label="Icon Select"
-            android:theme="@style/Theme.Doomflame.NoActionBar" />
+            android:theme="@style/Theme.Doomflame" />
 
         <activity
             android:name=".DoomFlameActivity"
