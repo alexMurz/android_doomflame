@@ -29,7 +29,7 @@
             android:name=".theme_change.ThemeChangeActivity"
             android:exported="false"
             android:label="Theme change"
-            android:theme="@style/Theme.Doomflame.NoActionBar" />
+            android:theme="@style/Theme.Activity.ThemeChange" />
 
         <activity
             android:name=".icon_select.IconSelectActivity"
