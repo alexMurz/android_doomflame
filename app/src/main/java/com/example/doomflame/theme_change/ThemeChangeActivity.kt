@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.Toolbar
 import com.example.doomflame.R
 
 private const val IS_DARK_THEME = "is_dark"
@@ -31,6 +32,10 @@ class ThemeChangeActivity : AppCompatActivity(R.layout.activity_theme_change) {
             val topPadding = statusBarHeight()
             setPadding(0, topPadding, 0, 0)
         }
+
+        setSupportActionBar(findViewById<Toolbar>(R.id.toolbar).apply {
+            title = "Theme change"
+        })
 
         changerState = savedInstanceState
             ?.getParcelable(SAVED_SNAPSHOT) as? SnapshotStateHolder
