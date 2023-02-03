@@ -16,14 +16,14 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/Theme.Doomflame.AppBarOverlay"
+            android:background="@color/primary"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:background="@color/primary"
                 app:popupTheme="@style/Theme.Doomflame.PopupOverlay" />
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -41,21 +41,7 @@
                 style="@style/Theme.Button.Normal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Change theme fade" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button2"
-                style="@style/Theme.Button.Normal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Change theme slide" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button3"
-                style="@style/Theme.Button.Normal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Change theme circle" />
+                android:text="Change theme" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="88dp"

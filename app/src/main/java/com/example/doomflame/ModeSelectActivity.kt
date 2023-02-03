@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.doomflame.databinding.ActivityModeSelectBinding
 import com.example.doomflame.icon_select.iconSelectIntent
+import com.example.doomflame.recolorable.RecolorableActivityIntent
 import com.example.doomflame.theme_change.ThemeChangeIntent
 
 class ModeSelectActivity : AppCompatActivity() {
@@ -29,6 +30,10 @@ class ModeSelectActivity : AppCompatActivity() {
             startActivity(Intent(this, DoomFlameActivity::class.java).apply {
                 putExtra("gpu", true)
             })
+        }
+
+        binding.recolorable.setOnClickListener {
+            startActivity(RecolorableActivityIntent(this))
         }
 
         binding.flameCpu.setOnClickListener {

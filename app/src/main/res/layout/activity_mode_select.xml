@@ -43,6 +43,13 @@
                 android:text="Mode select" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/recolorable"
+                style="@style/Theme.Button.Normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Recolorable" />
+
+            <androidx.appcompat.widget.AppCompatButton
                 style="@style/Theme.Button.Hollow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Activity.Recolorable" parent="Theme.AppCompat.DayNight"></style>
+
+    <style name="Theme.Activity.Recolorable.Light">
+        <item name="colorPrimary">@color/primary_light</item>
+        <item name="colorOnPrimary">@color/on_primary_light</item>
+
+        <item name="colorSecondary">@color/accent_light</item>
+        <item name="colorOnSecondary">@color/on_accent_light</item>
+
+        <item name="colorErrorContainer">#FFE02020</item>
+        <item name="colorOnErrorContainer">#FF000000</item>
+
+        <item name="backgroundColor">@color/background_page_light</item>
+
+        <item name="android:textColorPrimary">#ff000000</item>
+
+        <item name="rippleColor">@color/accent_ripple_light</item>
+    </style>
+
+    <style name="Theme.Activity.Recolorable.Dark">
+        <item name="colorPrimary">@color/primary_night</item>
+        <item name="colorOnPrimary">@color/on_primary_night</item>
+
+        <item name="colorSecondary">@color/accent_night</item>
+        <item name="colorOnSecondary">@color/on_accent_night</item>
+
+        <item name="colorErrorContainer">#FF000000</item>
+        <item name="colorOnErrorContainer">#FFFF0000</item>
+
+        <item name="backgroundColor">@color/background_page_night</item>
+
+        <item name="android:textColorPrimary">#ffDEDEDE</item>
+
+        <item name="rippleColor">@color/accent_ripple_night</item>
+    </style>
+
+</resources>

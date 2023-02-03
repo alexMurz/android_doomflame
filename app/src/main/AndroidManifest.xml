@@ -28,6 +28,7 @@
         <activity
             android:name=".theme_change.ThemeChangeActivity"
             android:exported="false"
+            android:configChanges="uiMode"
             android:label="Theme change"
             android:theme="@style/Theme.Activity.ThemeChange" />
 
@@ -40,6 +41,11 @@
         <activity
             android:name=".DoomFlameActivity"
             android:exported="false" />
+
+        <activity android:name=".recolorable.RecolorableActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            />
 
         <service
             android:name=".icon_select.ChangeAppIconService"

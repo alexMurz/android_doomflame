@@ -15,6 +15,27 @@
         <item name="rippleColor">@color/accent_ripple</item>
     </style>
 
+    <style name="Theme.Doomflame.Light" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/primary_light</item>
+        <item name="colorPrimaryVariant">@color/primary_variant_light</item>
+        <item name="colorOnPrimary">@color/on_primary_light</item>
+        <item name="colorSecondary">@color/accent_light</item>
+        <item name="colorSecondaryVariant">@color/accent_variant_light</item>
+        <item name="colorOnSecondary">@color/on_accent_light</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="rippleColor">@color/accent_ripple_light</item>
+    </style>
+    <style name="Theme.Doomflame.Night" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/primary_night</item>
+        <item name="colorPrimaryVariant">@color/primary_variant_night</item>
+        <item name="colorOnPrimary">@color/on_primary_night</item>
+        <item name="colorSecondary">@color/accent_night</item>
+        <item name="colorSecondaryVariant">@color/accent_variant_night</item>
+        <item name="colorOnSecondary">@color/on_accent_night</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="rippleColor">@color/accent_ripple_night</item>
+    </style>
+
     <style name="Theme.Doomflame.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Doomflame.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -24,5 +45,21 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+    <style name="Theme.Activity.ThemeChange.Light" parent="Theme.Doomflame.Light">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+
+        <item name="backgroundColor">@color/background_page_light</item>
+    </style>
+    <style name="Theme.Activity.ThemeChange.Night" parent="Theme.Doomflame.Night">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+
+        <item name="backgroundColor">@color/background_page_night</item>
     </style>
 </resources>
